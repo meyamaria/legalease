@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legalease - Legal Assistant</title>
+    <meta name="description" content="AI-powered legal assistant for Indian law queries">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <!-- Preload critical images -->
+    <link rel="preload" href="images/hero.jpg" as="image">
+    <link rel="preload" href="images/law1.jpg" as="image">
+</head>
+<body>
+    <div class="background-image"></div>
+
+    <!-- Image Carousel -->
+    <div class="carousel-container">
+        <div id="carouselImages" class="carousel"></div>
+
+        <!-- Navigation Controls -->
+        <button class="nav-btn prev-btn" aria-label="Previous image">&lt;</button>
+        <button class="nav-btn next-btn" aria-label="Next image">&gt;</button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <textarea id="searchInput" placeholder="Ask your legal query here" aria-label="Legal query input"></textarea>
+        <div class="search-icons">
+            <button id="malayalamToggle" class="lang-toggle" aria-label="Toggle Malayalam">മ</button>
+            <button id="voiceSearch" aria-label="Voice search or send">
+                <i id="voiceIcon" class="bi bi-mic-fill"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Results Area -->
+    <div id="resultsContainer" class="results-container hidden">
+        <div class="results-header">
+            <h2>Legal Answer</h2>
+            <button id="closeResults" aria-label="Close results"><i class="bi bi-x"></i></button>
+        </div>
+        <div id="legalResponse" class="legal-response"></div>
+        <div class="citation-section">
+            <h3>IPC Sections Referenced</h3>
+            <div id="citations" class="citations"></div>
+        </div>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
