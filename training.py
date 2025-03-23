@@ -1,4 +1,4 @@
-# improved_train_model.py
+#improved_train_model.py
 import pandas as pd
 import numpy as np
 import pickle
@@ -14,6 +14,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Embedding, LSTM, Dropout, Bidirectional
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+from collections import Counter
 
 # Configuration parameters
 MAX_FEATURES = 10000  # Vocabulary size (increased from original)
@@ -83,10 +84,24 @@ X = pad_sequences(sequences, maxlen=MAX_SEQ_LENGTH)
 # Convert labels to categorical representation
 y = to_categorical(df['label'], num_classes=num_classes)
 
-# Split data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=TEST_SPLIT, random_state=42, stratify=y if len(df) > 10 else None
-)
+# Split data into training and testing sets - FIXED CODE HERE
+# Check for classes with only one sample
+y_indices = np.argmax(y, axis=1)
+class_counts = Counter(y_indices)
+rare_classes = [cls for cls, count in class_counts.items() if count < 2]
+
+if rare_classes:
+    print(f"Warning: Found {len(rare_classes)} classes with fewer than 2 samples. Stratification will be disabled.")
+    # Disable stratification for rare classes
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=TEST_SPLIT, random_state=42
+    )
+else:
+    # Regular stratified split if all classes have at least 2 samples
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=TEST_SPLIT, random_state=42, stratify=y
+    )
+
 print(f"Training data shape: {X_train.shape}")
 print(f"Testing data shape: {X_test.shape}")
 
@@ -100,7 +115,7 @@ callbacks = [
         restore_best_weights=True
     ),
     ModelCheckpoint(
-        filepath=os.path.join(MODEL_DIR, 'legal_model_checkpoint.h5'),
+        filepath=os.path.join(MODEL_DIR, 'legal_model_checkpoint.keras'),  # Changed .h5 to .keras
         monitor='val_loss',
         save_best_only=True
     )
@@ -204,7 +219,7 @@ print(f"Training history plot saved to {os.path.join(MODEL_DIR, 'training_histor
 # 7. Save all model components
 print("Saving all model components...")
 # Save the main model
-model.save(os.path.join(MODEL_DIR, 'legal_model.h5'))
+model.save(os.path.join(MODEL_DIR, 'legal_model.keras'))  # Changed .h5 to .keras
 
 # Save tokenizer
 tokenizer_json = tokenizer.to_json()

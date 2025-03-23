@@ -68,9 +68,16 @@ def load_models():
         text_field = 'combined_text'
     else:
         # Fallback to combining fields
-        text_field = 'Offense'
-        if 'Description' in df.columns:
-            text_field += ' Description'
+        if 'Description' in df.columns and 'Offense' in df.columns:
+            # Create a combined field if it doesn't exist
+            df['combined_text'] = df['Offense'] + ' ' + df['Description']
+            text_field = 'combined_text'
+        elif 'Offense' in df.columns:
+            text_field = 'Offense'
+        elif 'Description' in df.columns:
+            text_field = 'Description'
+        else:
+            raise ValueError("Cannot find required text columns in the dataset")
     
     tfidf_matrix = vectorizer.transform(df[text_field])
     print(f"✓ TF-IDF matrix prepared with shape {tfidf_matrix.shape}")
