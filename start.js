@@ -78,6 +78,11 @@ async function registerUser(username, email, password) {
         showMessage('Registration successful! Please log in.');
         // Switch to login form
         deactivateCoverBox();
+
+        // Redirect to index page after a short delay
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
         return true;
     } catch (error) {
         showMessage(error.message, true);
@@ -113,7 +118,7 @@ async function loginUser(username, password) {
         
         // Redirect to main application page or update UI to show logged-in state
         setTimeout(() => {
-            window.location.href = '/dashboard.html'; // Or update UI to show logged-in state
+            window.location.href = 'index.html'; // Or update UI to show logged-in state
         }, 1000);
         
         return true;
@@ -143,10 +148,10 @@ function checkAuthStatus() {
 }
 
 // Event Listeners
-registerLink.addEventListener('click', activateCoverBox);
-loginLink.addEventListener('click', deactivateCoverBox);
-btnPopup.addEventListener('click', activatePopup);
-iconClose.addEventListener('click', deactivateCoverPopup);
+if (registerLink) registerLink.addEventListener('click', activateCoverBox);
+if (loginLink) loginLink.addEventListener('click', deactivateCoverBox);
+if (btnPopup) btnPopup.addEventListener('click', activatePopup);
+if (iconClose) iconClose.addEventListener('click', deactivateCoverPopup);
 
 // Handle form submissions
 if (registerForm) {
@@ -156,16 +161,18 @@ if (registerForm) {
         const email = document.getElementById('registerEmail').value;
         const password = document.getElementById('registerPassword').value;
         
+        // Use the registerUser function instead of duplicating code
         await registerUser(username, email, password);
     });
 }
 
 if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
+    loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        
+        const username = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+    
+        // Use the loginUser function instead of duplicating code
         await loginUser(username, password);
     });
 }
