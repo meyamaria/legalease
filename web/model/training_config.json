@@ -1,0 +1,7 @@
+{
+    "max_features": 10000,
+    "max_seq_length": 150,
+    "embedding_dim": 128,
+    "num_classes": 266,
+    "test_accuracy": 0.987500011920929
+}
