@@ -14,6 +14,10 @@ const messageContainer = document.querySelector('.message-container') ||
 // Set up message container if needed
 if (!document.querySelector('.message-container')) {
     messageContainer.classList.add('message-container');
+    messageContainer.style.padding = '10px';
+    messageContainer.style.margin = '10px 0';
+    messageContainer.style.borderRadius = '5px';
+    messageContainer.style.display = 'none';
     cover_box.appendChild(messageContainer);
 }
 
@@ -40,12 +44,9 @@ function deactivateCoverPopup() {
 // Display messages to user
 function showMessage(message, isError = false) {
     messageContainer.textContent = message;
-    messageContainer.className = 'message-container';
-    if (isError) {
-        messageContainer.classList.add('error');
-    } else {
-        messageContainer.classList.add('success');
-    }
+    messageContainer.style.backgroundColor = isError ? '#ffebee' : '#e8f5e9';
+    messageContainer.style.color = isError ? '#c62828' : '#2e7d32';
+    messageContainer.style.border = `1px solid ${isError ? '#ef9a9a' : '#a5d6a7'}`;
     messageContainer.style.display = 'block';
     
     // Hide message after 3 seconds
@@ -57,32 +58,26 @@ function showMessage(message, isError = false) {
 // API Functions
 async function registerUser(username, email, password) {
     try {
-        const response = await fetch(`${API_URL}/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username,
-                email,
-                password
-            })
-        });
-
-        const data = await response.json();
+        // For development/testing without a backend server:
+        // Store user data in localStorage to simulate registration
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
         
-        if (!response.ok) {
-            throw new Error(data.error || 'Registration failed');
+        // Check if email already exists
+        if (users.some(user => user.email === email)) {
+            throw new Error('Email already registered');
         }
         
-        showMessage('Registration successful! Please log in.');
-        // Switch to login form
-        deactivateCoverBox();
-
+        // Add new user
+        users.push({ username, email, password });
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        showMessage('Registration successful! Redirecting to search page...', false);
+        
         // Redirect to index page after a short delay
         setTimeout(() => {
             window.location.href = 'index.html';
-        }, 1000);
+        }, 1500);
+        
         return true;
     } catch (error) {
         showMessage(error.message, true);
@@ -90,36 +85,33 @@ async function registerUser(username, email, password) {
     }
 }
 
-async function loginUser(username, password) {
+async function loginUser(email, password) {
     try {
-        const response = await fetch(`${API_URL}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
-        });
-
-        const data = await response.json();
+        // For development/testing without a backend server:
+        // Check credentials against localStorage
+        const users = JSON.parse(localStorage.getItem('users') || '[]');
+        const user = users.find(u => u.email === email && u.password === password);
         
-        if (!response.ok) {
-            throw new Error(data.error || 'Login failed');
+        if (!user) {
+            throw new Error('Invalid email or password');
         }
         
-        // Store the token in localStorage
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // Create a simple token (in a real app, this would be a JWT from server)
+        const token = btoa(`${email}:${Date.now()}`);
         
-        showMessage('Login successful!');
-        deactivateCoverPopup(); // Close the login popup
+        // Store auth data
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify({
+            username: user.username,
+            email: user.email
+        }));
         
-        // Redirect to main application page or update UI to show logged-in state
+        showMessage('Login successful! Redirecting to search page...', false);
+        
+        // Redirect to main application page
         setTimeout(() => {
-            window.location.href = 'index.html'; // Or update UI to show logged-in state
-        }, 1000);
+            window.location.href = 'index.html';
+        }, 1500);
         
         return true;
     } catch (error) {
@@ -169,11 +161,11 @@ if (registerForm) {
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const username = document.getElementById("loginEmail").value;
+        const email = document.getElementById("loginEmail").value;
         const password = document.getElementById("loginPassword").value;
     
         // Use the loginUser function instead of duplicating code
-        await loginUser(username, password);
+        await loginUser(email, password);
     });
 }
 
@@ -190,4 +182,32 @@ if (document.querySelector('.logout-btn')) {
 }
 
 // Check authentication status when the page loads
-document.addEventListener('DOMContentLoaded', checkAuthStatus);
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the form elements now that the DOM is loaded
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    
+    if (loginForm) {
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            await loginUser(email, password);
+        });
+    }
+    
+    if (registerForm) {
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            await registerUser(username, email, password);
+        });
+    }
+    
+    // Check authentication status
+    checkAuthStatus();
+});

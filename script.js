@@ -21,6 +21,15 @@ const citations = document.getElementById('citations');
 const closeResults = document.getElementById('closeResults');
 const malayalamToggle = document.getElementById('malayalamToggle');
 
+// Check if user is authenticated
+function checkAuth() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        // Redirect to login page if not authenticated
+        window.location.href = 'start.html';
+    }
+}
+
 // ====== Carousel Implementation ======
 let currentIndex = 0;
 let isCarouselPaused = false;
@@ -396,7 +405,10 @@ function generateResponse(query, relevantSections) {
 }
 
 // ====== Initialize the application ======
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    
+    // Rest of your existing initialization code
     initCarousel();
     
     // Load ML model in background
