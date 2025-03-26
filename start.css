@@ -1,4 +1,3 @@
-
 *{
     padding: 0;
     margin: 0;
@@ -93,6 +92,8 @@ header .navigation ul li .btnLogin-popup{
     color: #fff;
     font-weight: 500;
     margin-left: 40px;
+    display: inline-block; /* Ensure the button is displayed */
+    visibility: visible;   /* Ensure it is visible */
 }
 
 header .navigation ul li .btnLogin-popup:hover{

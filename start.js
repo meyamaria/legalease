@@ -134,7 +134,7 @@ function checkAuthStatus() {
             document.querySelector('.user-profile').style.display = 'block';
         }
         if (btnPopup) {
-            btnPopup.style.display = 'none';
+           // btnPopup.style.display = 'none';
         }
     }
 }
@@ -210,4 +210,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Check authentication status
     checkAuthStatus();
+});
+
+// Add event listeners for login and register forms
+document.getElementById('loginForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
+    // Perform validation or authentication logic here if needed
+    window.location.href = 'index.html'; // Redirect to the index page
+});
+
+document.getElementById('registerForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
+    // Perform validation or registration logic here if needed
+    window.location.href = 'index.html'; // Redirect to the index page
 });

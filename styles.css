@@ -253,6 +253,29 @@ body, html {
     cursor: pointer;
 }
 
+.logout-btn {
+    position: absolute;
+    top: 20px; /* Position it at the top */
+    right: 20px; /* Position it at the right */
+    background-color: rgba(7, 11, 21, 0.8); /* Semi-transparent background for better visibility */
+    color: var(--text-light); /* Light text color */
+    border: none;
+    border-radius: 30px; /* Rounded corners */
+    padding: 10px 20px; /* Add padding for better appearance */
+    font-size: 1rem; /* Adjust font size */
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Add a shadow for enhancement */
+    z-index: 100; /* Ensure it overlaps other elements */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover effect */
+}
+
+.logout-btn:hover {
+    background-color: var(--accent-color); /* Change color on hover */
+    transform: scale(1.1); /* Slightly enlarge the button on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5); /* Enhance shadow on hover */
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .carousel-container {

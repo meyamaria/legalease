@@ -30,6 +30,15 @@ function checkAuth() {
     }
 }
 
+function logOut() {
+    // Remove authentication data from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    // Redirect to the start page
+    window.location.href = 'start.html';
+}
+
 // ====== Carousel Implementation ======
 let currentIndex = 0;
 let isCarouselPaused = false;
